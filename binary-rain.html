@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MVP Queue & Appointments — EN/FR (Canada)</title>
+    <style>
+        :root {
+            --bg: #0b0d10;
+            --card: #12151a;
+            --muted: #9aa4b2;
+            --fg: #e6edf3;
+            --acc: #4ade80;
+            --warn: #fbbf24;
+            --danger: #f87171;
+            --border: #1e2530
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--fg);
+            font: 15px/1.5 ui-sans-serif, system-ui, Segoe UI, Roboto, Noto Sans, Arial
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 16px
+        }
+
+        .topbar {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px
+        }
+
+        .brand {
+            display: flex;
+            gap: 10px;
+            align-items: center
+        }
+
+        .brand .flag {
+            width: 22px;
+            height: 14px;
+            border-radius: 2px;
+            box-shadow: 0 0 0 1px #0004
+        }
+
+        .nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .nav a {
+            padding: 10px 14px;
+            border: 1px solid #26313f;
+            border-radius: 10px;
+            background: #0e1218
+        }
+
+        .nav a.active {
+            border-color: var(--acc);
+            outline: 2px solid rgba(74, 222, 128, .15)
+        }
+
+        h1,
+        h2 {
+            margin: 14px 0 10px
+        }
+
+        .grid {
+            display: grid;
+            gap: 12px
+        }
+
+        @media(min-width:900px) {
+            .grid-2 {
+                grid-template-columns: 1fr 1fr
+            }
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px
+        }
+
+        label {
+            display: block;
+            margin: 8px 0 4px;
+            color: var(--muted)
+        }
+
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #2a3442;
+            background: #0e1218;
+            color: var(--fg)
+        }
+
+        input:focus,
+        select:focus,
+        button:focus {
+            outline: 2px solid #3b82f680;
+            outline-offset: 1px
+        }
+
+        button {
+            cursor: pointer;
+            border-color: #334155
+        }
+
+        .row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .row>* {
+            flex: 1
+        }
+
+        .btn {
+            background: #17202a
+        }
+
+        .btn.primary {
+            background: #13351f;
+            border-color: #1f6b3a
+        }
+
+        .btn.primary:hover {
+            background: #124c27
+        }
+
+        .btn.warn {
+            background: #3b2f11;
+            border-color: #7c5f11
+        }
+
+        .btn.danger {
+            background: #3b1311;
+            border-color: #7c1d1b
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: #16202c;
+            border: 1px solid #2a3442;
+            color: var(--muted);
+            font-size: 12px
+        }
+
+        .list {
+            display: grid;
+            gap: 8px
+        }
+
+        .ticket {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            border: 1px dashed #334155;
+            border-radius: 10px;
+            background: #0d131a
+        }
+
+        .big {
+            font-size: 42px;
+            letter-spacing: 2px
+        }
+
+        .center {
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        .ok {
+            color: var(--acc)
+        }
+
+        .warn {
+            color: var(--warn)
+        }
+
+        .danger {
+            color: var(--danger)
+        }
+
+        .kbd {
+            font-family: ui-monospace, Menlo, Consolas, monospace;
+            background: #10161d;
+            border: 1px solid #2b3442;
+            border-radius: 6px;
+            padding: 2px 6px
+        }
+
+        .lang {
+            display: flex;
+            gap: 6px;
+            align-items: center
+        }
+
+        .lang select {
+            width: auto
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="topbar" role="banner">
+            <div class="brand">
+                <img class="flag" alt="Canada flag"
+                    src="data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 40'><rect width='64' height='40' fill='%23ff0000'/><rect x='16' width='32' height='40' fill='%23ffffff'/><path d='M32 6l2 6 6-2-4 5 6 3-7 1 3 6-6-3-6 3 3-6-7-1 6-3-4-5 6 2z' fill='%23ff0000'/></svg>">
+                <h1 data-i18n="title">MVP Queue & Appointments</h1>
+            </div>
+            <div class="lang" aria-label="Language switcher">
+                <label for="lang" class="muted" data-i18n="language">Language</label>
+                <select id="lang" aria-controls="nav views">
+                    <option value="en">English</option>
+                    <option value="fr">Français (Canada)</option>
+                </select>
+            </div>
+        </div>
+
+        <nav class="nav" id="nav" role="navigation" aria-label="Main tabs">
+            <a href="#kiosk" id="tab-kiosk" data-i18n="tab.kiosk" aria-controls="view-kiosk">Kiosk</a>
+            <a href="#appointments" id="tab-appointments" data-i18n="tab.appointments"
+                aria-controls="view-appointments">Appointments</a>
+            <a href="#display" id="tab-display" data-i18n="tab.display" aria-controls="view-display">Display</a>
+            <a href="#staff" id="tab-staff" data-i18n="tab.staff" aria-controls="view-staff">Staff</a>
+        </nav>
+
+        <!-- KIOSK -->
+        <section id="view-kiosk" class="grid grid-2" hidden aria-labelledby="tab-kiosk">
+            <div class="card">
+                <h2 data-i18n="kiosk.h2">Get a Ticket</h2>
+                <label for="kiosk-service" data-i18n="kiosk.service">Service</label>
+                <select id="kiosk-service"></select>
+                <button class="btn primary" id="btn-get-ticket" data-i18n="kiosk.get">Get Ticket</button>
+                <div id="kiosk-result" style="margin-top:10px" aria-live="polite"></div>
+                <p class="muted"><span data-i18n="kiosk.tip1">Tip: open</span> <span class="kbd">#display</span> <span
+                        data-i18n="kiosk.tip2">in another tab for the public screen.</span></p>
+            </div>
+            <div class="card">
+                <h2 data-i18n="kiosk.snapshot">Today's Queue Snapshot</h2>
+                <div id="kiosk-stats" class="list"></div>
+            </div>
+        </section>
+
+        <!-- APPOINTMENTS -->
+        <section id="view-appointments" class="grid grid-2" hidden aria-labelledby="tab-appointments">
+            <div class="card">
+                <h2 data-i18n="ap.h2">Book Appointment</h2>
+                <label for="ap-name" data-i18n="ap.name">Full name</label>
+                <input id="ap-name" placeholder="" autocomplete="name" />
+                <div class="row">
+                    <div>
+                        <label for="ap-phone" data-i18n="ap.phone">Phone (optional)</label>
+                        <input id="ap-phone" placeholder="+1…" inputmode="tel" autocomplete="tel-national" />
+                    </div>
+                    <div>
+                        <label for="ap-service" data-i18n="ap.service">Service</label>
+                        <select id="ap-service"></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div>
+                        <label for="ap-date" data-i18n="ap.date">Date</label>
+                        <input id="ap-date" type="date" />
+                    </div>
+                    <div>
+                        <label for="ap-time" data-i18n="ap.time">Time</label>
+                        <input id="ap-time" type="time" />
+                    </div>
+                </div>
+                <button class="btn primary" id="btn-book" data-i18n="ap.book">Book</button>
+                <div id="ap-result" style="margin-top:10px" aria-live="polite"></div>
+            </div>
+            <div class="card">
+                <h2 data-i18n="ap.upcoming">Upcoming Appointments</h2>
+                <div id="ap-list" class="list"></div>
+            </div>
+        </section>
+
+        <!-- DISPLAY -->
+        <section id="view-display" hidden aria-labelledby="tab-display">
+            <div class="card center" style="min-height:60vh;flex-direction:column">
+                <div class="muted" data-i18n="disp.now">Now Serving</div>
+                <div id="disp-now" class="big ok">—</div>
+                <div class="row" style="margin-top:12px;max-width:700px">
+                    <div class="card" style="flex:1">
+                        <div class="muted" data-i18n="disp.next">Next</div>
+                        <div id="disp-next" class="big warn">—</div>
+                    </div>
+                    <div class="card" style="flex:1">
+                        <div class="muted" data-i18n="disp.waiting">Waiting</div>
+                        <div id="disp-wait" class="big">0</div>
+                    </div>
+                </div>
+                <div class="muted" style="margin-top:8px" data-i18n="disp.auto">This screen updates automatically.</div>
+            </div>
+        </section>
+
+        <!-- STAFF -->
+        <section id="view-staff" class="grid grid-2" hidden aria-labelledby="tab-staff">
+            <div class="card">
+                <h2 data-i18n="staff.h2">Call Next</h2>
+                <label for="st-service" data-i18n="staff.service">Service</label>
+                <select id="st-service"></select>
+                <div class="row" style="margin-top:8px">
+                    <button class="btn primary" id="btn-call-next" data-i18n="staff.call">Call next</button>
+                    <button class="btn warn" id="btn-recall" data-i18n="staff.recall">Recall</button>
+                    <button class="btn danger" id="btn-skip" data-i18n="staff.skip">Skip current</button>
+                </div>
+                <div style="margin-top:12px">
+                    <div class="muted" data-i18n="staff.now">Now Serving</div>
+                    <div id="st-now" class="big ok">—</div>
+                </div>
+            </div>
+            <div class="card">
+                <h2 data-i18n="staff.queues">Queues</h2>
+                <div id="st-queues" class="list"></div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        /* ================= i18n ================= */
+        const I18N = {
+            en: {
+                title: "MVP Queue & Appointments",
+                language: "Language",
+                tab: { kiosk: "Kiosk", appointments: "Appointments", display: "Display", staff: "Staff" },
+                kiosk: { h2: "Get a Ticket", service: "Service", get: "Get Ticket", tip1: "Tip: open", tip2: "in another tab for the public screen.", snapshot: "Today's Queue Snapshot" },
+                ap: {
+                    h2: "Book Appointment", name: "Full name", phone: "Phone (optional)", service: "Service", date: "Date", time: "Time", book: "Book", upcoming: "Upcoming Appointments",
+                    booked: (d, t) => `Booked for ${d} ${t}`, fillErr: "Please fill required fields."
+                },
+                disp: { now: "Now Serving", next: "Next", waiting: "Waiting", auto: "This screen updates automatically." },
+                staff: { h2: "Call Next", service: "Service", call: "Call next", recall: "Recall", skip: "Skip current", now: "Now Serving", queues: "Queues" },
+                ui: { now: "Now", waiting: "Waiting", queued: "queued", empty: "Empty queue", yourTicket: "Your ticket" }
+            },
+            fr: { // Français (Canada)
+                title: "MVP – Files d’attente et rendez-vous",
+                language: "Langue",
+                tab: { kiosk: "Borne", appointments: "Rendez-vous", display: "Affichage", staff: "Agent" },
+                kiosk: {
+                    h2: "Prendre un ticket", service: "Service", get: "Obtenir un ticket",
+                    tip1: "Astuce : ouvrez", tip2: "dans un autre onglet pour l’écran public.",
+                    snapshot: "Aperçu des files d’aujourd’hui"
+                },
+                ap: {
+                    h2: "Prendre un rendez-vous", name: "Nom et prénom", phone: "Téléphone (facultatif)", service: "Service",
+                    date: "Date", time: "Heure", book: "Réserver", upcoming: "Rendez-vous à venir",
+                    booked: (d, t) => `Réservé pour le ${d} à ${t}`, fillErr: "Veuillez remplir les champs obligatoires."
+                },
+                disp: { now: "Au service de", next: "Suivant", waiting: "En attente", auto: "Cet écran se met à jour automatiquement." },
+                staff: {
+                    h2: "Appeler le suivant", service: "Service", call: "Appeler", recall: "Rappeler", skip: "Ignorer l’actuel",
+                    now: "Au service de", queues: "Files d’attente"
+                },
+                ui: { now: "En cours", waiting: "En attente", queued: "en file", empty: "File vide", yourTicket: "Votre ticket" }
+            }
+        };
+
+        const DEFAULT_SERVICES = [
+            { id: 'tax', name_en: 'Property Tax', name_fr: 'Taxes foncières', prefix: 'A' },
+            { id: 'permit', name_en: 'Permits', name_fr: 'Permis', prefix: 'B' },
+            { id: 'id', name_en: 'ID Services', name_fr: 'Services d’identification', prefix: 'C' }
+        ];
+
+        /* ================= Storage Keys & Utils ================= */
+        const KEYS = {
+            lang: 'mvp.lang',
+            services: 'mvp.services',
+            queues: 'mvp.queues',
+            called: 'mvp.called',
+            counters: 'mvp.counters',
+            appts: 'mvp.appts'
+        };
+
+        function load(key, fb) { try { return JSON.parse(localStorage.getItem(key)) ?? fb; } catch { return fb; } }
+        function save(key, v) { localStorage.setItem(key, JSON.stringify(v)); }
+        const uuid = () => (crypto?.randomUUID ? crypto.randomUUID() : ('id-' + Math.random().toString(16).slice(2) + Date.now()));
+
+        /* ================= Bootstrap & Migration ================= */
+        function migrateServicesIfNeeded() {
+            let services = load(KEYS.services, DEFAULT_SERVICES);
+            let changed = false;
+            services = services.map(s => {
+                if (!s.name_en && !s.name_fr && s.name) { // legacy structure (only 'name')
+                    changed = true;
+                    return {
+                        id: s.id || s.name.toLowerCase().replace(/\s+/g, '-'),
+                        name_en: s.name,
+                        name_fr: s.name_fr || s.name,
+                        prefix: s.prefix || 'A'
+                    };
+                }
+                return s;
+            });
+            if (changed) save(KEYS.services, services);
+        }
+
+        (function () {
+            if (!localStorage.getItem(KEYS.services)) save(KEYS.services, DEFAULT_SERVICES);
+            if (!localStorage.getItem(KEYS.queues)) save(KEYS.queues, {});
+            if (!localStorage.getItem(KEYS.called)) save(KEYS.called, {});
+            if (!localStorage.getItem(KEYS.counters)) save(KEYS.counters, {});
+            if (!localStorage.getItem(KEYS.appts)) save(KEYS.appts, []);
+            if (!localStorage.getItem(KEYS.lang)) {
+                const pref = navigator.language?.toLowerCase() || 'en';
+                save(KEYS.lang, pref.startsWith('fr') ? 'fr' : 'en');
+            }
+            migrateServicesIfNeeded();
+        })();
+
+        /* ================= DOM Shortcuts ================= */
+        const $ = s => document.querySelector(s);
+        const $$ = s => document.querySelectorAll(s);
+
+        /* ================= Language State & Helpers ================= */
+        let LANG = load(KEYS.lang, 'en');
+        $('#lang').value = LANG;
+
+        function t(path) {
+            const parts = path.split('.');
+            let node = I18N[LANG];
+            for (const p of parts) { node = node?.[p]; }
+            return node ?? path;
+        }
+
+        function translateStatic() {
+            document.documentElement.lang = (LANG === 'fr' ? 'fr-CA' : 'en-CA');
+            document.documentElement.dir = 'ltr';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const val = t(key);
+                if (typeof val === 'function') return;
+                el.textContent = val;
+            });
+            $('#ap-name').placeholder = (LANG === 'fr' ? 'Saisir votre nom' : 'Your name');
+            $('#ap-phone').placeholder = (LANG === 'fr' ? '+1…' : '+1…');
+        }
+
+        function translateDynamic(root) {
+            root?.querySelectorAll?.('[data-i18n]')?.forEach(el => {
+                const key = el.getAttribute('data-i18n'); const val = t(key);
+                if (typeof val === 'function') return;
+                el.textContent = val;
+            });
+        }
+
+        /* ================= Services & Queues ================= */
+        function getServices() { return load(KEYS.services, DEFAULT_SERVICES); }
+        function getQueues() { return load(KEYS.queues, {}); }
+        function setQueues(v) { save(KEYS.queues, v); }
+        function getCalled() { return load(KEYS.called, {}); }
+        function setCalled(v) { save(KEYS.called, v); }
+        function getCounters() { return load(KEYS.counters, {}); }
+        function setCounters(v) { save(KEYS.counters, v); }
+        function getAppts() { return load(KEYS.appts, []); }
+        function setAppts(v) { save(KEYS.appts, v); }
+
+        function nextTicket(serviceId) {
+            const svc = getServices().find(s => s.id === serviceId);
+            const counters = getCounters();
+            const current = (counters[serviceId] || 0) + 1;
+            counters[serviceId] = current; setCounters(counters);
+            return `${svc.prefix}${String(current).padStart(3, '0')}`;
+        }
+
+        function enqueue(serviceId, ticketId) {
+            const q = getQueues(); (q[serviceId] ??= []).push(ticketId); setQueues(q);
+        }
+        function dequeue(serviceId) {
+            const q = getQueues(); if (!q[serviceId] || q[serviceId].length === 0) return null;
+            const ticketId = q[serviceId].shift(); setQueues(q);
+            const c = getCalled(); c[serviceId] = ticketId; setCalled(c);
+            return ticketId;
+        }
+        function recall(serviceId) { return (getCalled())[serviceId] || null; }
+        function skip(serviceId) { const c = getCalled(); c[serviceId] = null; setCalled(c); }
+
+        /* ================= UI Wiring ================= */
+        function populateServiceSelects() {
+            const services = getServices();
+            const nameKey = LANG === 'fr' ? 'name_fr' : 'name_en';
+            const options = services.map(s => `<option value="${s.id}">${s[nameKey] || s.name}</option>`).join('');
+            ['#kiosk-service', '#ap-service', '#st-service'].forEach(sel => $(sel).innerHTML = options);
+        }
+
+        function renderKioskStats() {
+            const services = getServices();
+            const nameKey = LANG === 'fr' ? 'name_fr' : 'name_en';
+            const queues = getQueues(); const called = getCalled();
+            $('#kiosk-stats').innerHTML = services.map(s => {
+                const wait = (queues[s.id] || []).length; const now = called[s.id] || '—';
+                return `<div class="ticket">
+      <div>
+        <div><strong>${s[nameKey] || s.name}</strong></div>
+        <div class="muted">${t('ui.now')}: <span class="ok">${now}</span></div>
+      </div>
+      <div class="pill">${t('ui.waiting')}: ${wait}</div>
+    </div>`;
+            }).join('');
+        }
+
+        function renderAppts() {
+            const list = getAppts().sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+            const services = getServices(); const nameKey = LANG === 'fr' ? 'name_fr' : 'name_en';
+            $('#ap-list').innerHTML = (list.slice(0, 8).map(a => {
+                const s = services.find(x => x.id === a.serviceId);
+                return `<div class="ticket">
+      <div>
+        <strong>${a.name}</strong>
+        <div class="muted">${s ? (s[nameKey] || s.name) : a.serviceId}</div>
+      </div>
+      <div>${a.date} ${a.time}</div>
+    </div>`;
+            }).join('')) || `<div class="muted">${t('ui.empty')}</div>`;
+        }
+
+        function renderQueues() {
+            const services = getServices(); const nameKey = LANG === 'fr' ? 'name_fr' : 'name_en';
+            const queues = getQueues(); const called = getCalled();
+            $('#st-queues').innerHTML = services.map(s => {
+                const arr = queues[s.id] || []; const now = called[s.id] ?? '—';
+                return `<div class="card">
+      <div class="row" style="align-items:center">
+        <div style="flex:1">
+          <strong>${s[nameKey] || s.name}</strong>
+          <div class="muted">${t('ui.now')}: <span class="ok">${now}</span></div>
+        </div>
+        <div class="pill">${t('ui.waiting')}: ${arr.length}</div>
+      </div>
+      <div class="list" style="margin-top:8px">
+        ${arr.slice(0, 6).map(tk => `<div class="ticket"><span>${tk}</span><span class="muted">${t('ui.queued')}</span></div>`).join('') || `<div class="muted">${t('ui.empty')}</div>`}
+      </div>
+    </div>`;
+            }).join('');
+        }
+
+        function renderDisplay() {
+            const services = getServices(); const queues = getQueues(); const called = getCalled();
+            const now = Object.values(called).filter(Boolean).pop() || '—';
+            let next = '—', waiting = 0;
+            services.forEach(s => { const a = queues[s.id] || []; waiting += a.length; if (next === '—' && a.length > 0) next = a[0]; });
+            $('#disp-now').textContent = now;
+            $('#disp-next').textContent = next;
+            $('#disp-wait').textContent = waiting;
+        }
+
+        function fitDisplay() {
+            const size = Math.max(32, Math.min(72, Math.floor(window.innerWidth / 12)));
+            document.querySelectorAll('#view-display .big').forEach(el => el.style.fontSize = size + 'px');
+        }
+
+        function renderAll() {
+            populateServiceSelects();
+            translateStatic();
+            renderKioskStats();
+            renderAppts();
+            renderQueues();
+            renderDisplay();
+        }
+
+        /* Routing */
+        function route() {
+            const hash = location.hash || '#kiosk';
+            $$('#nav a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === hash));
+            ['kiosk', 'appointments', 'display', 'staff'].forEach(id => $('#view-' + id).hidden = ('#' + id) !== hash);
+            if (hash === '#display') fitDisplay();
+            renderAll();
+        }
+        window.addEventListener('hashchange', route);
+        window.addEventListener('resize', () => { if (location.hash === '#display') fitDisplay(); });
+
+        /* Actions */
+        $('#btn-get-ticket').addEventListener('click', () => {
+            const serviceId = $('#kiosk-service').value;
+            const ticketId = nextTicket(serviceId);
+            enqueue(serviceId, ticketId);
+            $('#kiosk-result').innerHTML =
+                `<div class="ticket">
+       <strong data-i18n="ui.yourTicket"></strong>
+       <span class="big" aria-live="polite">${ticketId}</span>
+     </div>`;
+            translateDynamic($('#kiosk-result'));
+            renderAll();
+        });
+
+        $('#btn-book').addEventListener('click', () => {
+            const name = $('#ap-name').value.trim();
+            const phone = $('#ap-phone').value.trim();
+            const serviceId = $('#ap-service').value;
+            const date = $('#ap-date').value;
+            const time = $('#ap-time').value;
+            if (!name || !date || !time) {
+                $('#ap-result').innerHTML = `<span class="danger">${t('ap.fillErr')}</span>`;
+                return;
+            }
+            const appts = getAppts();
+            appts.push({ id: uuid(), name, phone, serviceId, date, time, createdAt: Date.now() });
+            setAppts(appts);
+            $('#ap-result').innerHTML = `<span class="ok">${t('ap.booked')(date, time)}</span>`;
+            $('#ap-name').value = ''; $('#ap-phone').value = '';
+            renderAppts();
+        });
+
+        $('#btn-call-next').addEventListener('click', () => {
+            const id = $('#st-service').value;
+            const ticketId = dequeue(id);
+            $('#st-now').textContent = ticketId ?? '—';
+            renderAll();
+        });
+        $('#btn-recall').addEventListener('click', () => {
+            const id = $('#st-service').value;
+            const ticketId = recall(id);
+            if (ticketId) $('#st-now').textContent = ticketId;
+            renderAll();
+        });
+        $('#btn-skip').addEventListener('click', () => {
+            const id = $('#st-service').value;
+            skip(id);
+            $('#st-now').textContent = '—';
+            renderAll();
+        });
+
+        /* Cross-tab sync */
+        window.addEventListener('storage', e => { if (e.key && Object.values(KEYS).includes(e.key)) renderAll(); });
+
+        /* Language switcher */
+        $('#lang').addEventListener('change', () => {
+            LANG = $('#lang').value;
+            save(KEYS.lang, LANG);
+            renderAll();
+        });
+
+        /* Init */
+        route();
+    </script>
+</body>
+
+</html>
